@@ -7,40 +7,7 @@ import product2 from "@/assets/product-2.jpg";
 import product3 from "@/assets/product-3.jpg";
 import { cn } from "@/lib/utils";
 
-const products = [
-  {
-    name: "Artisan Woven Tote",
-    description: "Handcrafted jute with leather handles",
-    details: "This spacious tote is woven from 100% natural jute fibers, featuring reinforced leather handles for durability. Perfect for farmers markets or beach days.",
-    price: "₹2,499",
-    image: product1,
-    images: [product1, product2, product3, product1],
-  },
-  {
-    name: "Botanical Canvas Bag",
-    description: "Natural cotton with leaf print",
-    details: "Made from organic cotton canvas, this bag features a hand-printed botanical design using eco-friendly dyes. Includes an inner pocket for valuables.",
-    price: "₹1,899",
-    image: product2,
-    images: [product2, product3, product1, product2],
-  },
-  {
-    name: "Designer Sage Tote",
-    description: "Premium canvas with wooden button",
-    details: "Minimalist design meets functionality. The sage green canvas is paired with a handcrafted wooden button closure. Durable, stylish, and sustainable.",
-    price: "₹2,199",
-    image: product3,
-    images: [product3, product1, product2, product3],
-  },
-  {
-    name: "Hemp Market Shopper",
-    description: "Breathable hemp fiber weave",
-    details: "Ultra-strong hemp fibers make this the ideal reusable grocery bag. Naturally resistant to mold and UV light, ensuring it lasts for years.",
-    price: "₹1,599",
-    image: product1,
-    images: [product1, product3, product2, product1],
-  },
-];
+import { products } from "@/data/products";
 
 export const ProductHighlight = () => {
   const [selectedProduct, setSelectedProduct] = useState<typeof products[0] | null>(null);
@@ -88,7 +55,7 @@ export const ProductHighlight = () => {
   };
 
   return (
-    <section className="relative py-24 bg-primary overflow-hidden">
+    <section id="natural-fiber-collection" className="relative py-24 bg-primary overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute top-20 -right-20 w-80 h-80 rounded-full bg-accent/10 blur-3xl animate-pulse" />
       <div className="absolute bottom-20 -left-20 w-80 h-80 rounded-full bg-accent/10 blur-3xl animate-pulse delay-700" />
@@ -109,20 +76,20 @@ export const ProductHighlight = () => {
             {/* Original Set */}
             <div className="flex gap-8 px-4">
               {products.map((product, index) => (
-                <ProductCard 
-                  key={`original-${index}`} 
-                  product={product} 
-                  onClick={() => openDetails(product)} 
+                <ProductCard
+                  key={`original-${index}`}
+                  product={product}
+                  onClick={() => openDetails(product)}
                 />
               ))}
             </div>
             {/* Duplicate Set for Loop */}
             <div className="flex gap-8 px-4">
               {products.map((product, index) => (
-                <ProductCard 
-                  key={`duplicate-${index}`} 
-                  product={product} 
-                  onClick={() => openDetails(product)} 
+                <ProductCard
+                  key={`duplicate-${index}`}
+                  product={product}
+                  onClick={() => openDetails(product)}
                 />
               ))}
             </div>
@@ -133,12 +100,12 @@ export const ProductHighlight = () => {
       {/* Full Screen Detail View Modal */}
       {selectedProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/90 backdrop-blur-md animate-in fade-in duration-200" onClick={handleBackdropClick}>
-          <div 
+          <div
             className="relative w-full max-w-7xl bg-cream rounded-3xl overflow-hidden shadow-2xl grid lg:grid-cols-2 animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
-            <button 
+            <button
               onClick={closeDetails}
               className="absolute top-4 right-4 z-20 w-10 h-10 bg-primary/10 hover:bg-primary/20 rounded-full flex items-center justify-center transition-colors"
             >
@@ -149,20 +116,20 @@ export const ProductHighlight = () => {
             <div className="flex flex-col justify-center bg-white p-6 gap-4">
               {/* Main Image - Reduced aspect ratio for a slightly smaller height */}
               <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-white shadow-sm flex items-center justify-center group">
-                <img 
-                  src={activeImage || selectedProduct.image} 
-                  alt={selectedProduct.name} 
+                <img
+                  src={activeImage || selectedProduct.image}
+                  alt={selectedProduct.name}
                   className="w-full h-full object-contain transition-all duration-300"
                 />
                 {/* Prev/Next Buttons */}
                 <div className="absolute inset-0 flex items-center justify-between px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <button 
+                  <button
                     onClick={prevImage}
                     className="w-10 h-10 bg-white/60 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-colors"
                   >
                     <ChevronLeft className="w-6 h-6 text-primary" />
                   </button>
-                  <button 
+                  <button
                     onClick={nextImage}
                     className="w-10 h-10 bg-white/60 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-colors"
                   >
@@ -170,7 +137,7 @@ export const ProductHighlight = () => {
                   </button>
                 </div>
               </div>
-              
+
               {/* Thumbnails */}
               <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide justify-center">
                 {selectedProduct.images.map((img, idx) => (
@@ -179,8 +146,8 @@ export const ProductHighlight = () => {
                     onClick={() => setActiveImage(img)}
                     className={cn(
                       "relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all bg-white",
-                      activeImage === img 
-                        ? "border-primary shadow-md scale-105" 
+                      activeImage === img
+                        ? "border-primary shadow-md scale-105"
                         : "border-transparent opacity-70 hover:opacity-100"
                     )}
                   >
@@ -199,11 +166,11 @@ export const ProductHighlight = () => {
                 <p className="text-2xl font-medium text-accent mb-6">
                   {selectedProduct.price}
                 </p>
-                
+
                 <div className="space-y-6 text-muted-foreground text-lg leading-relaxed">
                   <p className="font-medium text-primary/80">{selectedProduct.description}</p>
                   <p className="pb-6 border-b border-primary/10">{selectedProduct.details}</p>
-                  
+
                   <div className="space-y-4">
                     <h4 className="font-semibold text-primary">Product Highlights</h4>
                     <ul className="list-disc pl-5 space-y-2">
@@ -222,9 +189,9 @@ export const ProductHighlight = () => {
                   <span className="px-4 py-2 bg-primary/5 rounded-full text-sm font-semibold text-primary">Handmade</span>
                   <span className="px-4 py-2 bg-primary/5 rounded-full text-sm font-semibold text-primary">Sustainable</span>
                 </div>
-                
-                <Button 
-                  size="lg" 
+
+                <Button
+                  size="lg"
                   className="w-full bg-primary hover:bg-secondary text-primary-foreground text-lg py-6 rounded-full shadow-lg hover:shadow-xl transition-all"
                   onClick={() => handleBuyNow(selectedProduct.name)}
                 >
@@ -265,7 +232,7 @@ const ProductCard = ({ product, onClick }: { product: any; onClick: () => void }
         </div>
       </div>
     </div>
-    
+
     <div className="p-6 text-center">
       <h3 className="text-xl font-bold text-primary mb-1">{product.name}</h3>
       <p className="text-muted-foreground text-sm mb-3">{product.description}</p>
@@ -347,7 +314,7 @@ export const BulkOrderForm = () => {
           </div>
           <input type="tel" name="phone" placeholder="Phone Number (Optional)" value={formData.phone} onChange={handleChange} className="w-full p-4 bg-white border border-primary/20 rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none transition-shadow" />
           <textarea name="message" placeholder="Your message (e.g., 'I'm interested in 50 Artisan Woven Totes...')" required value={formData.message} onChange={handleChange} rows={5} className="w-full p-4 bg-white border border-primary/20 rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none transition-shadow"></textarea>
-          
+
           <div className="text-center">
             <Button type="submit" size="lg" className="bg-primary hover:bg-secondary text-primary-foreground text-lg py-6 px-12 rounded-full shadow-lg hover:shadow-xl transition-all disabled:opacity-70">
               <Send className="mr-2 w-5 h-5" />

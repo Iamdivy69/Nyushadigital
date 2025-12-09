@@ -11,7 +11,7 @@ export const Footer = () => {
             <img src={logo} alt="Nyusha Enterprise" className="w-20 h-20 mb-4 object-contain" />
             <h3 className="text-2xl font-bold mb-4">Nyusha Enterprise</h3>
             <p className="text-[#1B4332]/80 leading-relaxed">
-              Handcrafted natural fiber bags that combine sustainability, 
+              Handcrafted natural fiber bags that combine sustainability,
               craftsmanship, and timeless style. Made in India with love.
             </p>
           </div>
