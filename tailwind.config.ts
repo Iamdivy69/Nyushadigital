@@ -86,6 +86,10 @@ export default {
           from: { transform: "translateX(0)" },
           to: { transform: "translateX(-50%)" },
         },
+        "border-shine": {
+          "0%": { backgroundPosition: "-1000% 0" },
+          "100%": { backgroundPosition: "1000% 0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -93,6 +97,7 @@ export default {
         "fade-in": "fade-in 0.8s ease-out forwards",
         shimmer: "shimmer 3s linear infinite", // Restored to 3s to match video
         marquee: "marquee 30s linear infinite",
+        "border-shine": "border-shine 3s linear infinite",
       },
     },
   },

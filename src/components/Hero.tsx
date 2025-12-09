@@ -23,15 +23,15 @@ export const Hero = () => {
         <img 
           src={logo} 
           alt="Nyusha Enterprise" 
-          className="w-40 h-40 mx-auto mb-8 object-contain animate-fade-in drop-shadow-xl" 
+          className="w-32 h-32 md:w-40 md:h-40 mx-auto mb-6 md:mb-8 object-contain animate-fade-in drop-shadow-xl" 
         />
         
-        <h1 className="text-5xl md:text-7xl font-bold text-primary mb-6 animate-fade-in">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-primary mb-4 md:mb-6 animate-fade-in">
           Made with Natural Fibers.{" "}
           <span className="font-script text-secondary">Crafted</span> for Everyday Life.
         </h1>
         
-        <p className="text-xl md:text-2xl text-primary/80 mb-10 animate-fade-in font-medium">
+        <p className="text-lg sm:text-xl md:text-2xl text-primary/80 mb-8 md:mb-10 animate-fade-in font-medium">
           Sustainable handcrafted bags designed for work, travel, and everything in between.
         </p>
 
@@ -52,7 +52,7 @@ export const Hero = () => {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+      <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
         <div className="w-6 h-10 border-2 border-primary/50 rounded-full flex justify-center">
           <div className="w-1 h-3 bg-primary rounded-full mt-2 animate-pulse" />
         </div>
