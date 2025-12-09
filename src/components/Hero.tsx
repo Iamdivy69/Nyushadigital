@@ -10,7 +10,7 @@ export const Hero = () => {
         className="absolute inset-0 bg-cover bg-center bg-fixed"
         style={{
           backgroundImage: `url(${heroBg})`,
-          opacity: 0.6,
+          opacity: 0.60,
           filter: "grayscale(20%) contrast(120%)",
         }}
       />
@@ -23,7 +23,8 @@ export const Hero = () => {
         <img
           src={logo}
           alt="Nyusha Enterprise"
-          className="w-32 h-32 md:w-40 md:h-40 mx-auto mb-6 md:mb-8 object-contain animate-fade-in drop-shadow-xl"
+          className="w-32 h-32 md:w-40 md:h-40 mx-auto mb-6 md:mb-8 object-contain animate-fade-in"
+          style={{ filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.3))" }}
         />
 
         <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-primary mb-4 md:mb-6 animate-fade-in">
