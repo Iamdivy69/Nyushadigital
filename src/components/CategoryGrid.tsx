@@ -7,7 +7,7 @@ export const CategoryGrid = () => {
     <section id="shop-by-category" className="py-24 bg-cream">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-5xl md:text-6xl font-bold text-primary mb-4">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-primary mb-4">
             Shop by <span className="font-script text-accent">Category</span>
           </h2>
         </div>
@@ -26,7 +26,7 @@ export const CategoryGrid = () => {
                       alt={category.name}
                       className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/60 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/40 to-transparent" />
                   </CardItem>
 
                   <div className="relative h-full flex flex-col justify-end p-8 text-cream z-20 pointer-events-none">

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { categories } from "@/data/categories";
 import { products } from "@/data/products";
@@ -10,6 +11,12 @@ const CategoryPage = () => {
     const { id } = useParams();
     const category = categories.find((c) => c.id === id);
     const categoryProducts = products.filter(p => p.category === id);
+
+    useEffect(() => {
+        if (category) {
+            document.title = `${category.name} | Nyusha Enterprise`;
+        }
+    }, [category]);
 
     if (!category) {
         return (

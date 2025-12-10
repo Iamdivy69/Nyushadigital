@@ -1,28 +1,31 @@
-import productsHero from "@/assets/products-hero.jpg";
+import drawstringCover from "@/assets/drawstring-potli/drawstring-potli-1.png";
+import nonWovenCover from "@/assets/non-woven-bags/non-woven-bags-1.png";
+import designerCover from "@/assets/designer-totes/designer-totes-1.png";
+import ecoCover from "@/assets/eco-essentials/eco-essentials-1.png";
 
 export const categories = [
     {
         id: "drawstring-potli",
         name: "Drawstring (potli)",
         description: "Natural jute and cotton weaves with authentic texture and durability for everyday use.",
-        image: productsHero,
+        image: drawstringCover,
     },
     {
         id: "non-woven-bags",
         name: "Non-Woven Bags",
         description: "Modern structured designs with eco-friendly materials perfect for work and travel.",
-        image: productsHero,
+        image: nonWovenCover,
     },
     {
         id: "designer-totes",
         name: "Designer Totes",
         description: "Premium handcrafted pieces combining style with sustainable craftsmanship.",
-        image: productsHero,
+        image: designerCover,
     },
     {
         id: "eco-essentials",
         name: "Eco Essentials",
         description: "Daily essentials crafted from natural fibers to reduce your environmental footprint.",
-        image: productsHero,
+        image: ecoCover,
     },
 ];

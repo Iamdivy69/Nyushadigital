@@ -8,7 +8,13 @@ import { Testimonials } from "@/components/Testimonials";
 import { CTAStrip } from "@/components/CTAStrip";
 import { Footer } from "@/components/Footer";
 
+import { useEffect } from "react";
+
 const Index = () => {
+  useEffect(() => {
+    document.title = "Nyusha Enterprise | Handcrafted Sustainable Bags";
+  }, []);
+
   return (
     <main className="overflow-x-hidden">
       <Hero />

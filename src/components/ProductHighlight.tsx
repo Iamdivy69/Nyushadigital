@@ -26,15 +26,17 @@ export const ProductHighlight = () => {
   const nextImage = () => {
     if (!selectedProduct) return;
     const currentIndex = selectedProduct.images.indexOf(activeImage || selectedProduct.images[0]);
-    const nextIndex = (currentIndex + 1) % selectedProduct.images.length;
-    setActiveImage(selectedProduct.images[nextIndex]);
+    if (currentIndex < selectedProduct.images.length - 1) {
+      setActiveImage(selectedProduct.images[currentIndex + 1]);
+    }
   };
 
   const prevImage = () => {
     if (!selectedProduct) return;
     const currentIndex = selectedProduct.images.indexOf(activeImage || selectedProduct.images[0]);
-    const prevIndex = (currentIndex - 1 + selectedProduct.images.length) % selectedProduct.images.length;
-    setActiveImage(selectedProduct.images[prevIndex]);
+    if (currentIndex > 0) {
+      setActiveImage(selectedProduct.images[currentIndex - 1]);
+    }
   };
 
   // Handle backdrop click to close modal
@@ -54,6 +56,11 @@ export const ProductHighlight = () => {
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
   };
 
+  // Helper to determine arrow visibility
+  const currentIndex = selectedProduct?.images.indexOf(activeImage || selectedProduct?.images[0] || "") ?? 0;
+  const showPrev = currentIndex > 0;
+  const showNext = selectedProduct ? currentIndex < selectedProduct.images.length - 1 : false;
+
   return (
     <section id="natural-fiber-collection" className="relative py-24 bg-primary overflow-hidden">
       {/* Decorative elements */}
@@ -62,16 +69,16 @@ export const ProductHighlight = () => {
 
       <div className="relative z-10 w-full">
         <div className="text-center mb-16 px-6">
-          <h2 className="text-5xl md:text-6xl font-bold text-cream mb-4">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-cream mb-4">
             Natural Fiber <span className="font-script text-accent">Collection</span>
           </h2>
-          <p className="text-xl text-cream/80 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-cream/80 max-w-2xl mx-auto">
             Stylish, practical, and thoughtfully crafted bags for daily life.
           </p>
         </div>
 
         {/* Marquee Container */}
-        <div className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
+        <div className="w-full inline-flex flex-nowrap overflow-x-auto scrollbar-none [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
           <div className="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-marquee hover:[animation-play-state:paused]">
             {/* Original Set */}
             <div className="flex gap-8 px-4">
@@ -123,18 +130,22 @@ export const ProductHighlight = () => {
                 />
                 {/* Prev/Next Buttons */}
                 <div className="absolute inset-0 flex items-center justify-between px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <button
-                    onClick={prevImage}
-                    className="w-10 h-10 bg-white/60 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-colors"
-                  >
-                    <ChevronLeft className="w-6 h-6 text-primary" />
-                  </button>
-                  <button
-                    onClick={nextImage}
-                    className="w-10 h-10 bg-white/60 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-colors"
-                  >
-                    <ChevronRight className="w-6 h-6 text-primary" />
-                  </button>
+                  {showPrev ? (
+                    <button
+                      onClick={prevImage}
+                      className="w-10 h-10 bg-white/60 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-colors"
+                    >
+                      <ChevronLeft className="w-6 h-6 text-primary" />
+                    </button>
+                  ) : <div />}
+                  {showNext && (
+                    <button
+                      onClick={nextImage}
+                      className="w-10 h-10 bg-white/60 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-colors"
+                    >
+                      <ChevronRight className="w-6 h-6 text-primary" />
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -210,8 +221,8 @@ export const ProductHighlight = () => {
 // Extracted Card Component for cleaner code
 const ProductCard = ({ product, onClick }: { product: any; onClick: () => void }) => (
   <Card
-    onClick={onClick} // Increased card width from 320px to 360px
-    className="group min-w-[400px] max-w-[400px] bg-cream border-none shadow-xl cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl overflow-hidden rounded-3xl"
+    onClick={onClick}
+    className="group min-w-[280px] sm:min-w-[320px] md:min-w-[400px] max-w-[280px] sm:max-w-[320px] md:max-w-[400px] bg-cream border-none shadow-xl cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl overflow-hidden rounded-3xl"
   >
     <div className="relative">
       <div className="absolute top-4 left-1/2 -translate-x-1/2 w-12 h-12 bg-accent/80 rounded-full flex items-center justify-center shadow-lg z-10">
@@ -235,7 +246,7 @@ const ProductCard = ({ product, onClick }: { product: any; onClick: () => void }
 
     <div className="p-6 text-center">
       <h3 className="text-xl font-bold text-primary mb-1">{product.name}</h3>
-      <p className="text-muted-foreground text-sm mb-3">{product.description}</p>
+      <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{product.description}</p>
     </div>
   </Card>
 );
@@ -296,10 +307,10 @@ export const BulkOrderForm = () => {
     <section className="py-24 bg-cream">
       <div className="max-w-4xl mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-5xl md:text-6xl font-bold text-primary mb-4">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-primary mb-4">
             Enquire for <span className="font-script text-secondary">Bulk Orders</span>
           </h2>
-          <p className="text-xl text-primary/80 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-primary/80 max-w-2xl mx-auto">
             Interested in larger quantities for corporate gifting, events, or retail? Fill out the form below.
           </p>
         </div>

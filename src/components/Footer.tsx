@@ -20,10 +20,10 @@ export const Footer = () => {
           <div>
             <h4 className="font-bold text-lg mb-4">Shop</h4>
             <ul className="space-y-2 text-[#1B4332]/80">
-              <li><a href="#" className="hover:text-[#40916C] transition-colors">Woven Bags</a></li>
-              <li><a href="#" className="hover:text-[#40916C] transition-colors">Non-Woven Bags</a></li>
-              <li><a href="#" className="hover:text-[#40916C] transition-colors">Designer Totes</a></li>
-              <li><a href="#" className="hover:text-[#40916C] transition-colors">Eco Essentials</a></li>
+              <li><a href="#shop-by-category" className="hover:text-[#40916C] transition-colors">Woven Bags</a></li>
+              <li><a href="#shop-by-category" className="hover:text-[#40916C] transition-colors">Non-Woven Bags</a></li>
+              <li><a href="#shop-by-category" className="hover:text-[#40916C] transition-colors">Designer Totes</a></li>
+              <li><a href="#shop-by-category" className="hover:text-[#40916C] transition-colors">Eco Essentials</a></li>
             </ul>
           </div>
 
@@ -31,7 +31,7 @@ export const Footer = () => {
           <div>
             <h4 className="font-bold text-lg mb-4">Information</h4>
             <ul className="space-y-2 text-[#1B4332]/80">
-              <li><a href="#" className="hover:text-[#40916C] transition-colors">About Us</a></li>
+              <li><a href="#founders" className="hover:text-[#40916C] transition-colors">About Us</a></li>
               <li><a href="#" className="hover:text-[#40916C] transition-colors">Shipping Policy</a></li>
               <li><a href="#" className="hover:text-[#40916C] transition-colors">Return Policy</a></li>
               <li><a href="#" className="hover:text-[#40916C] transition-colors">Privacy Policy</a></li>
