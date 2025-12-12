@@ -1,11 +1,22 @@
-import { Leaf, Heart, Hammer, Shield, Users } from "lucide-react";
+import { Leaf, Heart, Hammer, Shield } from "lucide-react";
+import madeInIndia from "@/assets/made in india.png";
+
+const MakeInIndiaIcon = ({ className }: { className?: string }) => (
+  <img
+    src={madeInIndia}
+    alt="Made in India"
+    // Override the default size (w-8 h-8) to make this specific icon larger
+    className={className?.replace("w-8 h-8", "w-14 h-14")}
+    style={{ objectFit: "contain" }}
+  />
+);
 
 const usps = [
   { icon: Leaf, text: "Sustainability in Every Stitch" },
   { icon: Hammer, text: "100% Handcrafted" },
   { icon: Heart, text: "Eco-Friendly Materials" },
   { icon: Shield, text: "Built to Last" },
-  { icon: Users, text: "Small-Batch Production" },
+  { icon: MakeInIndiaIcon, text: "Made in India" },
 ];
 
 export const USPStrip = () => {

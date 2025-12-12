@@ -5,6 +5,12 @@ import ecoCover from "@/assets/eco-essentials/eco-essentials-1.png";
 
 export const categories = [
     {
+        id: "daily-totes",
+        name: "Daily Totes",
+        description: "Daily essentials crafted from natural fibers to reduce your environmental footprint.",
+        image: ecoCover,
+    },
+    {
         id: "drawstring-potli",
         name: "Drawstring (potli)",
         description: "Natural jute and cotton weaves with authentic texture and durability for everyday use.",
@@ -21,11 +27,5 @@ export const categories = [
         name: "Designer Totes",
         description: "Premium handcrafted pieces combining style with sustainable craftsmanship.",
         image: designerCover,
-    },
-    {
-        id: "eco-essentials",
-        name: "Eco Essentials",
-        description: "Daily essentials crafted from natural fibers to reduce your environmental footprint.",
-        image: ecoCover,
     },
 ];
