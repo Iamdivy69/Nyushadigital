@@ -188,7 +188,7 @@ export default function AdminProducts() {
                                     <TableCell>{product.product_id || "-"}</TableCell>
                                     <TableCell className="font-medium">{product.name}</TableCell>
                                     <TableCell>{product.category}</TableCell>
-                                    <TableCell>${product.price.toFixed(2)}</TableCell>
+                                    <TableCell>₹{product.price.toFixed(2)}</TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex justify-end gap-2">
                                             <Button

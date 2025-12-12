@@ -13,6 +13,7 @@ interface Product {
     category: string;
     highlights?: string[];
     gallery?: string[];
+    product_id?: string;
 }
 
 interface ProductDetailModalProps {
