@@ -311,13 +311,13 @@ const ProductCard = ({ product, onClick }: { product: Product; onClick: () => vo
 
 // New Bulk Order Form Component
 export const BulkOrderForm = () => {
-  // IMPORTANT: Replace with your own Web3Forms Access Key
-  const WEB3FORMS_ACCESS_KEY = "YOUR_ACCESS_KEY_HERE";
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxowrUJHzsoT0OLTMEi9IVBWgTR1QYW27LkMeUIG2Is_r8naowDnJ_7F7YrSYeEUEYqzA/exec";
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
+    quantity: "",
     message: "",
   });
 
@@ -336,28 +336,26 @@ export const BulkOrderForm = () => {
 
     const form = e.currentTarget;
     const data = new FormData(form);
-    data.append("access_key", WEB3FORMS_ACCESS_KEY);
 
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
         body: data,
+        mode: "no-cors",
       });
 
-      const result = await response.json();
+      // Since mode is 'no-cors', we cannot access response status.
+      // We assume if it didn't throw, it was successful.
+      setStatus("Message sent successfully!");
+      alert("Inquiry sent successfully!");
+      form.reset();
+      setFormData({ name: "", email: "", phone: "", quantity: "", message: "" });
+      setTimeout(() => setStatus(""), 3000);
 
-      if (result.success) {
-        setStatus("Message sent successfully!");
-        form.reset();
-        setFormData({ name: "", email: "", phone: "", message: "" });
-        setTimeout(() => setStatus(""), 3000);
-      } else {
-        setStatus("Error sending message. Please try again.");
-        console.error("Error from Web3Forms:", result);
-      }
     } catch (error) {
       setStatus("An error occurred. Please try again later.");
       console.error("Submission error:", error);
+      alert("Failed to send inquiry. Please try again.");
     }
   };
 
@@ -374,15 +372,15 @@ export const BulkOrderForm = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="max-w-xl mx-auto space-y-6">
-          <input type="hidden" name="subject" value="New Bulk Order Inquiry from Nyusha Website" />
-          <input type="hidden" name="from_name" value="Nyusha Green Craft" />
-
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <input type="text" name="name" placeholder="Your Name" required value={formData.name} onChange={handleChange} className="w-full p-4 bg-white border border-primary/20 rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none transition-shadow" />
             <input type="email" name="email" placeholder="Your Email" required value={formData.email} onChange={handleChange} className="w-full p-4 bg-white border border-primary/20 rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none transition-shadow" />
           </div>
-          <input type="tel" name="phone" placeholder="Phone Number (Optional)" value={formData.phone} onChange={handleChange} className="w-full p-4 bg-white border border-primary/20 rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none transition-shadow" />
-          <textarea name="message" placeholder="Your message (e.g., 'I'm interested in 50 Artisan Woven Totes...')" required value={formData.message} onChange={handleChange} rows={5} className="w-full p-4 bg-white border border-primary/20 rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none transition-shadow"></textarea>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <input type="tel" name="phone" placeholder="Phone Number" required value={formData.phone} onChange={handleChange} className="w-full p-4 bg-white border border-primary/20 rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none transition-shadow" />
+            <input type="number" name="quantity" placeholder="Quantity (e.g., 50)" required value={formData.quantity} onChange={handleChange} className="w-full p-4 bg-white border border-primary/20 rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none transition-shadow" />
+          </div>
+          <textarea name="message" placeholder="Your message..." required value={formData.message} onChange={handleChange} rows={5} className="w-full p-4 bg-white border border-primary/20 rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none transition-shadow"></textarea>
 
           <div className="text-center">
             <Button type="submit" size="lg" className="bg-primary hover:bg-secondary text-primary-foreground text-lg py-6 px-12 rounded-full shadow-lg hover:shadow-xl transition-all disabled:opacity-70">
@@ -397,10 +395,6 @@ export const BulkOrderForm = () => {
             {status}
           </p>
         )}
-
-        <div className="text-center mt-4 text-sm text-primary/60">
-          <p>Powered by Web3Forms</p>
-        </div>
       </div>
     </section>
   );
