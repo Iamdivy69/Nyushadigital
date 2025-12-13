@@ -1,21 +1,31 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { X, ShoppingBag, ChevronLeft, ChevronRight, Send } from "lucide-react";
-import product1 from "@/assets/product-1.jpg";
-import product2 from "@/assets/product-2.jpg";
-import product3 from "@/assets/product-3.jpg";
+import { X, ChevronLeft, ChevronRight, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-import { products } from "@/data/products";
+import { useProducts, Product } from "@/hooks/useProducts";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const ProductHighlight = () => {
-  const [selectedProduct, setSelectedProduct] = useState<typeof products[0] | null>(null);
+  const { products: remoteProducts, isLoading } = useProducts();
+
+  // Strictly filter for featured products
+  const displayProducts = remoteProducts?.filter(p => p.highlights?.includes("Featured")) || [];
+
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [activeImage, setActiveImage] = useState<string | null>(null);
 
-  const openDetails = (product: typeof products[0]) => {
+  // Helper to get all images for a product
+  const getProductImages = (product: Product | null): string[] => {
+    if (!product) return [];
+    // Combine main image and gallery, filtering out nulls
+    return [product.image_url, ...(product.gallery || [])].filter((url): url is string => !!url);
+  };
+
+  const openDetails = (product: Product) => {
     setSelectedProduct(product);
-    setActiveImage(product.images[0]);
+    const images = getProductImages(product);
+    setActiveImage(images[0] || null);
   };
 
   const closeDetails = () => {
@@ -25,17 +35,19 @@ export const ProductHighlight = () => {
 
   const nextImage = () => {
     if (!selectedProduct) return;
-    const currentIndex = selectedProduct.images.indexOf(activeImage || selectedProduct.images[0]);
-    if (currentIndex < selectedProduct.images.length - 1) {
-      setActiveImage(selectedProduct.images[currentIndex + 1]);
+    const images = getProductImages(selectedProduct);
+    const currentIndex = images.indexOf(activeImage || images[0] || "");
+    if (currentIndex < images.length - 1) {
+      setActiveImage(images[currentIndex + 1]);
     }
   };
 
   const prevImage = () => {
     if (!selectedProduct) return;
-    const currentIndex = selectedProduct.images.indexOf(activeImage || selectedProduct.images[0]);
+    const images = getProductImages(selectedProduct);
+    const currentIndex = images.indexOf(activeImage || images[0] || "");
     if (currentIndex > 0) {
-      setActiveImage(selectedProduct.images[currentIndex - 1]);
+      setActiveImage(images[currentIndex - 1]);
     }
   };
 
@@ -47,9 +59,9 @@ export const ProductHighlight = () => {
     }
   };
 
-  const handleBuyNow = (productName: string) => {
+  const handleBuyNow = (product: Product) => {
     const phoneNumber = "7359392396";
-    const message = `Hello! I'm interested in buying the "${productName}".`;
+    const message = `Hello, I am interested in this bag: ${product.name} - ${product.image_url}`;
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
     // Open in a new tab for a better user experience
@@ -57,9 +69,39 @@ export const ProductHighlight = () => {
   };
 
   // Helper to determine arrow visibility
-  const currentIndex = selectedProduct?.images.indexOf(activeImage || selectedProduct?.images[0] || "") ?? 0;
+  const currentImages = getProductImages(selectedProduct);
+  const currentIndex = currentImages.indexOf(activeImage || currentImages[0] || "") ?? 0;
   const showPrev = currentIndex > 0;
-  const showNext = selectedProduct ? currentIndex < selectedProduct.images.length - 1 : false;
+  const showNext = selectedProduct ? currentIndex < currentImages.length - 1 : false;
+
+  // Use the highlights directly from the product, or fallback
+  const highlights = selectedProduct?.highlights && selectedProduct.highlights.length > 0
+    // Filter out the "Featured" tag for display purposes if you don't want to show it as a bullet point
+    ? selectedProduct.highlights.filter(h => h !== "Featured")
+    : [
+      "100% Biodegradable Materials",
+      "Hand-stitched by skilled artisans",
+      "Durable natural fibers",
+      "Plastic-free packaging",
+    ];
+
+  // While loading, show skeletons
+  if (isLoading) {
+    return (
+      <section id="natural-fiber-collection" className="relative py-24 bg-primary overflow-hidden">
+        <div className="relative z-10 w-full text-center px-6">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-cream mb-4">
+            Natural Fiber <span className="font-script text-accent">Collection</span>
+          </h2>
+          <div className="flex gap-8 px-4 justify-center mt-12 overflow-hidden">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="min-w-[280px] h-[400px] bg-cream/10 rounded-3xl animate-pulse" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="natural-fiber-collection" className="relative py-24 bg-primary overflow-hidden">
@@ -78,30 +120,36 @@ export const ProductHighlight = () => {
         </div>
 
         {/* Marquee Container */}
-        <div className="w-full inline-flex flex-nowrap overflow-x-auto scrollbar-none [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
-          <div className="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-marquee hover:[animation-play-state:paused]">
-            {/* Original Set */}
-            <div className="flex gap-8 px-4">
-              {products.map((product, index) => (
-                <ProductCard
-                  key={`original-${index}`}
-                  product={product}
-                  onClick={() => openDetails(product)}
-                />
-              ))}
-            </div>
-            {/* Duplicate Set for Loop */}
-            <div className="flex gap-8 px-4">
-              {products.map((product, index) => (
-                <ProductCard
-                  key={`duplicate-${index}`}
-                  product={product}
-                  onClick={() => openDetails(product)}
-                />
-              ))}
+        {displayProducts && displayProducts.length > 0 ? (
+          <div className="w-full inline-flex flex-nowrap overflow-x-auto scrollbar-none [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
+            <div className="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-marquee hover:[animation-play-state:paused]">
+              {/* Original Set */}
+              <div className="flex gap-8 px-4">
+                {displayProducts.map((product, index) => (
+                  <ProductCard
+                    key={`original-${product.id}`}
+                    product={product}
+                    onClick={() => openDetails(product)}
+                  />
+                ))}
+              </div>
+              {/* Duplicate Set for Loop */}
+              <div className="flex gap-8 px-4">
+                {displayProducts.map((product, index) => (
+                  <ProductCard
+                    key={`duplicate-${product.id}`}
+                    product={product}
+                    onClick={() => openDetails(product)}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="text-center text-cream/60 py-12">
+            No products found in the collection.
+          </div>
+        )}
       </div>
 
       {/* Full Screen Detail View Modal */}
@@ -123,11 +171,16 @@ export const ProductHighlight = () => {
             <div className="flex flex-col justify-center bg-white p-6 gap-4">
               {/* Main Image - Reduced aspect ratio for a slightly smaller height */}
               <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-white shadow-sm flex items-center justify-center group">
-                <img
-                  src={activeImage || selectedProduct.image}
-                  alt={selectedProduct.name}
-                  className="w-full h-full object-contain transition-all duration-300"
-                />
+                {activeImage || selectedProduct.image_url ? (
+                  <img
+                    src={activeImage || selectedProduct.image_url || "/placeholder.svg"}
+                    alt={selectedProduct.name}
+                    className="w-full h-full object-contain transition-all duration-300"
+                  />
+                ) : (
+                  <div className="text-gray-400">No Image</div>
+                )}
+
                 {/* Prev/Next Buttons */}
                 <div className="absolute inset-0 flex items-center justify-between px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   {showPrev ? (
@@ -150,22 +203,24 @@ export const ProductHighlight = () => {
               </div>
 
               {/* Thumbnails */}
-              <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide justify-center">
-                {selectedProduct.images.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveImage(img)}
-                    className={cn(
-                      "relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all bg-white",
-                      activeImage === img
-                        ? "border-primary shadow-md scale-105"
-                        : "border-transparent opacity-70 hover:opacity-100"
-                    )}
-                  >
-                    <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-contain" />
-                  </button>
-                ))}
-              </div>
+              {currentImages.length > 1 && (
+                <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide justify-center">
+                  {currentImages.map((img, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveImage(img)}
+                      className={cn(
+                        "relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all bg-white",
+                        activeImage === img
+                          ? "border-primary shadow-md scale-105"
+                          : "border-transparent opacity-70 hover:opacity-100"
+                      )}
+                    >
+                      <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-contain" />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Content Side */}
@@ -175,20 +230,20 @@ export const ProductHighlight = () => {
                   {selectedProduct.name}
                 </h3>
                 <p className="text-2xl font-medium text-accent mb-6">
-                  {selectedProduct.price}
+                  {/* Format price if it's a number */}
+                  ₹{selectedProduct.price}
                 </p>
 
                 <div className="space-y-6 text-muted-foreground text-lg leading-relaxed">
                   <p className="font-medium text-primary/80">{selectedProduct.description}</p>
-                  <p className="pb-6 border-b border-primary/10">{selectedProduct.details}</p>
 
-                  <div className="space-y-4">
+                  {/* Highlights instead of static details */}
+                  <div className="space-y-4 pt-4 border-t border-primary/10">
                     <h4 className="font-semibold text-primary">Product Highlights</h4>
                     <ul className="list-disc pl-5 space-y-2">
-                      <li>100% Biodegradable Materials</li>
-                      <li>Hand-stitched by skilled artisans</li>
-                      <li>Durable natural fibers</li>
-                      <li>Plastic-free packaging</li>
+                      {highlights && highlights.length > 0 ? highlights.map((highlight, index) => (
+                        <li key={index}>{highlight}</li>
+                      )) : <li>No highlights available</li>}
                     </ul>
                   </div>
                 </div>
@@ -204,10 +259,9 @@ export const ProductHighlight = () => {
                 <Button
                   size="lg"
                   className="w-full bg-primary hover:bg-secondary text-primary-foreground text-lg py-6 rounded-full shadow-lg hover:shadow-xl transition-all"
-                  onClick={() => handleBuyNow(selectedProduct.name)}
+                  onClick={() => handleBuyNow(selectedProduct)}
                 >
-                  {/* <ShoppingBag className="mr-2 w-5 h-5" /> */}
-                  Buy Now
+                  Buy on WhatsApp
                 </Button>
               </div>
             </div>
@@ -219,7 +273,7 @@ export const ProductHighlight = () => {
 };
 
 // Extracted Card Component for cleaner code
-const ProductCard = ({ product, onClick }: { product: any; onClick: () => void }) => (
+const ProductCard = ({ product, onClick }: { product: Product; onClick: () => void }) => (
   <Card
     onClick={onClick}
     className="group min-w-[280px] sm:min-w-[320px] md:min-w-[400px] max-w-[280px] sm:max-w-[320px] md:max-w-[400px] bg-cream border-none shadow-xl cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl overflow-hidden rounded-3xl"
@@ -228,13 +282,17 @@ const ProductCard = ({ product, onClick }: { product: any; onClick: () => void }
       <div className="absolute top-4 left-1/2 -translate-x-1/2 w-12 h-12 bg-accent/80 rounded-full flex items-center justify-center shadow-lg z-10">
         <div className="w-2 h-8 bg-primary/30 rounded-full" />
       </div>
-      {/* FIXED: Changed to bg-white and object-contain to ensure full image visibility */}
       <div className="aspect-[4/5] overflow-hidden bg-white p-2">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
-        />
+        {product.image_url ? (
+          <img
+            src={product.image_url}
+            alt={product.name}
+            className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">No Image</div>
+        )}
+
         {/* Hover Overlay */}
         <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
           <span className="bg-cream/90 text-primary px-6 py-3 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">

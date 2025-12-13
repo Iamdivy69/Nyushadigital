@@ -8,8 +8,10 @@ import NotFound from "./pages/NotFound";
 import CategoryPage from "./pages/CategoryPage";
 import ScrollToTop from "./components/ScrollToTop";
 import AdminProducts from "./pages/AdminProducts";
+import AdminCarousel from "./pages/AdminCarousel";
 import Login from "./pages/Login";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { AdminLayout } from "./components/admin/AdminLayout";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +27,14 @@ const App = () => (
           <Route path="/category/:id" element={<CategoryPage />} />
           <Route path="/login" element={<Login />} />
           <Route element={<ProtectedRoute />}>
-            <Route path="/admin/products" element={<AdminProducts />} />
+            <Route path="/admin/*" element={
+              <AdminLayout>
+                <Routes>
+                  <Route path="products" element={<AdminProducts />} />
+                  <Route path="carousel" element={<AdminCarousel />} />
+                </Routes>
+              </AdminLayout>
+            } />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

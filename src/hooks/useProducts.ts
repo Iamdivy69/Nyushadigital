@@ -24,6 +24,7 @@ export type ProductFormData = {
     product_id: string;
     image: File | null;
     galleryFiles: File[];
+    keptGalleryImages?: string[]; // URLs of gallery images to keep
 };
 
 export const useProducts = () => {
@@ -40,8 +41,7 @@ export const useProducts = () => {
     };
 
     const uploadImage = async (file: File): Promise<string> => {
-        const fileExt = file.name.split(".").pop();
-        const fileName = `${Math.random()}.${fileExt}`;
+        const fileName = file.name.replace(/\s+/g, "_");
         const filePath = `${fileName}`;
 
         const { error: uploadError } = await supabase.storage
@@ -58,14 +58,21 @@ export const useProducts = () => {
     };
 
     const deleteImage = async (imageUrl: string) => {
-        const imagePath = imageUrl.split("/").pop();
-        if (!imagePath) return;
+        try {
+            const imagePath = imageUrl.split("/").pop();
+            if (!imagePath) return;
 
-        const { error } = await supabase.storage
-            .from("product-images")
-            .remove([imagePath]);
+            // Validate if it's a supabase storage URL to avoid trying to delete external images
+            if (!imageUrl.includes("supabase")) return;
 
-        if (error) console.error("Error removing image:", error);
+            const { error } = await supabase.storage
+                .from("product-images")
+                .remove([imagePath]);
+
+            if (error) console.error("Error removing image:", error);
+        } catch (e) {
+            console.error("Exception removing image:", e);
+        }
     };
 
     const { data: products, isLoading, error } = useQuery({
@@ -115,10 +122,12 @@ export const useProducts = () => {
             id,
             formData,
             currentImageUrl,
+            currentGallery,
         }: {
             id: string;
             formData: ProductFormData;
             currentImageUrl: string | null;
+            currentGallery: string[] | null;
         }) => {
             let imageUrl = currentImageUrl;
 
@@ -131,15 +140,24 @@ export const useProducts = () => {
                 }
             }
 
-            // Handle gallery upload
-            let galleryUrls = existingProduct.gallery || [];
+            // Handle Gallery Deletions
+            // Identify images that were in currentGallery but are NOT in keptGalleryImages
+            const keptImages = formData.keptGalleryImages || [];
+            if (currentGallery) {
+                const imagesToDelete = currentGallery.filter(url => !keptImages.includes(url));
+                for (const url of imagesToDelete) {
+                    await deleteImage(url);
+                }
+            }
+
+            // Handle Gallery Additions
+            let galleryUrls = [...keptImages];
             if (formData.galleryFiles && formData.galleryFiles.length > 0) {
                 const newUrls: string[] = [];
                 for (const file of formData.galleryFiles) {
                     const url = await uploadImage(file);
                     if (url) newUrls.push(url);
                 }
-                // Append new images to existing gallery
                 galleryUrls = [...galleryUrls, ...newUrls];
             }
 
@@ -169,12 +187,18 @@ export const useProducts = () => {
     });
 
     const deleteProduct = useMutation({
-        mutationFn: async ({ id, imageUrl }: { id: string; imageUrl: string | null }) => {
+        mutationFn: async ({ id, imageUrl, gallery }: { id: string; imageUrl: string | null; gallery: string[] | null }) => {
             const { error } = await supabase.from("products").delete().eq("id", id);
             if (error) throw error;
 
             if (imageUrl) {
                 await deleteImage(imageUrl);
+            }
+
+            if (gallery && gallery.length > 0) {
+                for (const url of gallery) {
+                    await deleteImage(url);
+                }
             }
         },
         onSuccess: () => {

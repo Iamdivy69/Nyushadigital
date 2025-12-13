@@ -28,6 +28,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { categories } from "@/data/categories";
+import { X } from "lucide-react";
 
 const productSchema = z.object({
     name: z.string().min(1, "Name is required"),
@@ -38,6 +39,7 @@ const productSchema = z.object({
     highlights: z.string().optional(),
     image: z.any().optional(),
     galleryFiles: z.any().optional(),
+    keptGalleryImages: z.array(z.string()).optional(),
 });
 
 interface ProductDialogProps {
@@ -61,11 +63,13 @@ export function ProductDialog({
             price: 0,
             category: "",
             highlights: "",
-            highlights: "",
             image: null,
             galleryFiles: [],
+            keptGalleryImages: [],
         },
     });
+
+    const keptImages = form.watch("keptGalleryImages") || [];
 
     useEffect(() => {
         if (product) {
@@ -78,6 +82,7 @@ export function ProductDialog({
                 highlights: product.highlights ? product.highlights.join('\n') : "",
                 image: null, // Don't set file input value
                 galleryFiles: [],
+                keptGalleryImages: product.gallery || [],
             });
         } else {
             form.reset({
@@ -89,6 +94,7 @@ export function ProductDialog({
                 highlights: "",
                 image: null,
                 galleryFiles: [],
+                keptGalleryImages: [],
             });
         }
     }, [product, form, open]);
@@ -96,6 +102,12 @@ export function ProductDialog({
     const handleSubmit = async (data: ProductFormData) => {
         await onSubmit(data);
         onOpenChange(false);
+    };
+
+    const removeGalleryImage = (imageUrl: string) => {
+        const currentImages = form.getValues("keptGalleryImages") || [];
+        const newImages = currentImages.filter(url => url !== imageUrl);
+        form.setValue("keptGalleryImages", newImages);
     };
 
     return (
@@ -209,7 +221,7 @@ export function ProductDialog({
                             name="galleryFiles"
                             render={({ field: { value, onChange, ...field } }) => (
                                 <FormItem>
-                                    <FormLabel>Additional Images (Gallery)</FormLabel>
+                                    <FormLabel>Add Gallery Images</FormLabel>
                                     <FormControl>
                                         <Input
                                             {...field}
@@ -228,12 +240,38 @@ export function ProductDialog({
                                 </FormItem>
                             )}
                         />
+
+                        {/* Existing Gallery Images Display */}
+                        {keptImages.length > 0 && (
+                            <div className="space-y-2">
+                                <FormLabel>Current Gallery Images</FormLabel>
+                                <div className="flex flex-wrap gap-2">
+                                    {keptImages.map((url, index) => (
+                                        <div key={index} className="relative group w-20 h-20 rounded-md overflow-hidden border">
+                                            <img
+                                                src={url}
+                                                alt={`Gallery ${index + 1}`}
+                                                className="w-full h-full object-cover"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => removeGalleryImage(url)}
+                                                className="absolute top-1 right-1 bg-red-500 rounded-full p-1 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <X className="w-3 h-3" />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                         <FormField
                             control={form.control}
                             name="image"
                             render={({ field: { value, onChange, ...field } }) => (
                                 <FormItem>
-                                    <FormLabel>Image</FormLabel>
+                                    <FormLabel>Main Image</FormLabel>
                                     <FormControl>
                                         <Input
                                             {...field}

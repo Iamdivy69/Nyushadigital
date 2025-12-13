@@ -74,6 +74,7 @@ export default function AdminProducts() {
                 id: editingProduct.id,
                 formData: data,
                 currentImageUrl: editingProduct.image_url,
+                currentGallery: editingProduct.gallery,
             });
         } else {
             await addProduct.mutateAsync(data);
@@ -87,6 +88,7 @@ export default function AdminProducts() {
                 await deleteProduct.mutateAsync({
                     id: deleteId,
                     imageUrl: product.image_url,
+                    gallery: product.gallery,
                 });
             }
             setDeleteId(null);

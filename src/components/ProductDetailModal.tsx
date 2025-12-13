@@ -38,13 +38,13 @@ export function ProductDetailModal({
 
     if (!product) return null;
 
-    const phoneNumber = "917359392396";
+    const phoneNumber = "7359392396";
     const message = encodeURIComponent(
-        `Hello, I'm interested in this product:\n\n*Name:* ${product.name}\n*ID:* ${product.product_id || "N/A"}`
+        `Hello, I am interested in this bag: ${product.name} - ${product.image_url}`
     );
 
-    // Using api.whatsapp.com which is robust for text pre-filling on desktop
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
+    // Using wa.me as requested
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
     const highlights = product.highlights && product.highlights.length > 0
         ? product.highlights
@@ -145,7 +145,7 @@ export function ProductDetailModal({
                                 asChild
                             >
                                 <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                                    Buy Now
+                                    Buy on WhatsApp
                                 </a>
                             </Button>
                         </div>
