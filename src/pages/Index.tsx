@@ -1,12 +1,12 @@
-import { Hero } from "@/components/Hero";
-import { USPStrip } from "@/components/USPStrip";
-import { ProductHighlight } from "@/components/ProductHighlight";
+import { Hero } from "@/components/sections/Hero";
+import { USPStrip } from "@/components/sections/USPStrip";
+import { ProductHighlight } from "@/components/sections/ProductHighlight";
 import { CategoryGrid } from "@/components/CategoryGrid";
-import { Founders } from "@/components/Founders";
-import { Process } from "@/components/Process";
-import { Testimonials } from "@/components/Testimonials";
-import { CTAStrip } from "@/components/CTAStrip";
-import { Footer } from "@/components/Footer";
+import { Founders } from "@/components/sections/Founders";
+import { Process } from "@/components/sections/Process";
+import { Testimonials } from "@/components/sections/Testimonials";
+import { CTAStrip } from "@/components/sections/CTAStrip";
+import { Footer } from "@/components/sections/Footer";
 
 import { useEffect } from "react";
 

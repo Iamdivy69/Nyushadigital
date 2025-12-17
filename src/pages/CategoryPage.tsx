@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { categories } from "@/data/categories";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Footer } from "@/components/Footer";
+import { Footer } from "@/components/sections/Footer";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
