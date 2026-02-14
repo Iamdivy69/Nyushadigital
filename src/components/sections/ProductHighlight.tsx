@@ -311,7 +311,7 @@ const ProductCard = ({ product, onClick }: { product: Product; onClick: () => vo
 
 // New Bulk Order Form Component
 export const BulkOrderForm = () => {
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxowrUJHzsoT0OLTMEi9IVBWgTR1QYW27LkMeUIG2Is_r8naowDnJ_7F7YrSYeEUEYqzA/exec";
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwb6iy2ucUXnG6_uHg-4coG4Xh9RNQI3VWKkKCRihf0t8eO7GfZmPf18IGQoz8MYKQI/exec";
 
   const [formData, setFormData] = useState({
     name: "",
@@ -332,16 +332,26 @@ export const BulkOrderForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = e.currentTarget;
     setStatus("Submitting...");
 
-    const form = e.currentTarget;
-    const data = new FormData(form);
+    const payload = {
+      date: new Date().toLocaleString(),
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      quantity: formData.quantity,
+      message: formData.message,
+    };
 
     try {
       await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
-        body: data,
+        body: JSON.stringify(payload),
         mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8",
+        },
       });
 
       // Since mode is 'no-cors', we cannot access response status.

@@ -3,7 +3,7 @@ import { Send } from "lucide-react";
 import React, { useState } from "react";
 
 export const CTAStrip = () => {
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxowrUJHzsoT0OLTMEi9IVBWgTR1QYW27LkMeUIG2Is_r8naowDnJ_7F7YrSYeEUEYqzA/exec";
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwb6iy2ucUXnG6_uHg-4coG4Xh9RNQI3VWKkKCRihf0t8eO7GfZmPf18IGQoz8MYKQI/exec";
 
   const [formData, setFormData] = useState({
     name: "",
@@ -28,55 +28,36 @@ export const CTAStrip = () => {
     setIsSubmitting(true);
     setStatus("Submitting...");
 
-    const form = e.currentTarget;
-    const data = new FormData();
-    const date = new Date().toLocaleString();
-
-    // Sending BOTH TitleCase and lowercase keys to handle the script's conflict:
-    // 1. The Sheet logic uses headers (e.g. "Name") -> needs 'Name'
-    // 2. The Email logic uses lowercase properties (e.g. e.parameter.name) -> needs 'name'
-
-    data.append('date', date);
-    data.append('Date', date);
-
-    data.append('name', formData.name);
-    data.append('Name', formData.name);
-
-    data.append('email', formData.email);
-    data.append('Email', formData.email);
-
-    data.append('phone', formData.phone);
-    data.append('Phone', formData.phone);
-
-    data.append('quantity', formData.quantity);
-    data.append('Quantity', formData.quantity);
-
-    data.append('message', formData.message);
-    data.append('Message', formData.message);
-
-    // Debug logging
-    console.log("Submitting form data to Google Sheet:", {
-      url: GOOGLE_SCRIPT_URL,
-      data: Object.fromEntries(data.entries())
-    });
+    // Sending data as JSON is more robust for Google Apps Script execution
+    // We use 'text/plain' to avoid CORS preflight (OPTIONS) requests which GAS doesn't handle natively
+    const payload = {
+      date: new Date().toLocaleString(),
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      quantity: formData.quantity,
+      message: formData.message,
+    };
 
     try {
       await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
-        body: data,
+        body: JSON.stringify(payload),
         mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8",
+        },
       });
 
-      // Since mode is 'no-cors', we cannot access response status.
-      // We assume if it didn't throw, it was successful.
-      setStatus("Message sent successfully!");
-      console.log("Form submission fetch completed (no-cors mode)");
+      // With no-cors/text-plain, we can't read the JSON response, but if it doesn't throw, it likely succeeded.
+      // The script is designed to return JSON, but the browser might treat it as opaque.
 
+      setStatus("Message sent successfully!");
       setFormData({
         name: "",
         email: "",
         phone: "",
-        quantity: "50",  // Reset to default numeric value
+        quantity: "50",
         message: ""
       });
       setTimeout(() => setStatus(""), 5000);
